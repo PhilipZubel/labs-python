@@ -1,0 +1,38 @@
+Python Lab: Glasgow Adventures 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+Introduction:
+Welcome to the Glasgow Python Lab! Today, we'll dive into the exciting world of Python statements and expressions through Glasgow-themed stories and exercises.
+
+Statements and Expressions:
+Statements in Python are instructions that perform actions, and expressions are combinations of values and operators that can be evaluated.
+
+Story 1: The Bagpipe Player 🎶
+Imagine you are in the heart of Glasgow, surrounded by the sounds of bagpipes. Let's use Python to express the joy of playing the bagpipes!
+
+python
+Copy code
+# Expression: Combine strings to create a message
+bagpipe_message = "I love the sound of " + "bagpipes!"
+
+# Statement: Print the message
+print(bagpipe_message)
+Exercise 1:
+Complete the code to print: "Glasgow is known for its lively music and the sound of bagpipes!"
+
+Story 2: The Glasgow Weather ☔
+Glasgow is famous for its ever-changing weather. Let's use Python to express the excitement of checking the weather.
+
+python
+Copy code
+# Expression: Combine a string and a variable
+weather_condition = "rainy"
+weather_message = "The weather in Glasgow is " + weather_condition + " today."
+
+# Statement: Print the weather message
+print(weather_message)
+Exercise 2:
+Change the weather_condition variable to "sunny" and print the updated message.
+
+Conclusion:
+Statements and expressions are powerful tools in Python, allowing us to create dynamic and engaging stories like our Glasgow adventures.
+
+Feel free to customize the stories and exercises based on your preferences. This structure provides a blend of storytelling, explanation, and hands-on exercises to make learning Python more enjoyable for beginners.
