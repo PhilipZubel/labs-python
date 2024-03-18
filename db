@@ -1,0 +1,41 @@
+DECLARE @PrimaryKeyColumns NVARCHAR(MAX);
+
+SELECT @PrimaryKeyColumns = STUFF((
+    SELECT ', ' + COLUMN_NAME + ' ASC' -- Specify ASC explicitly
+    FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+    WHERE OBJECTPROPERTY(OBJECT_ID(CONSTRAINT_SCHEMA + '.' + CONSTRAINT_NAME), 'IsPrimaryKey') = 1
+      AND TABLE_SCHEMA = 'dbo' -- Replace 'dbo' with your schema name if it's different
+      AND TABLE_NAME = 'your_table_name'
+    ORDER BY ORDINAL_POSITION
+    FOR XML PATH('')), 1, 2, '');
+
+DECLARE @SQL NVARCHAR(MAX);
+SET @SQL = 'SELECT * FROM your_table ORDER BY ' + @PrimaryKeyColumns + ';'; -- No need to concatenate ASC here
+
+EXEC sp_executesql @SQL;
+
+
+
+
+
+
+
+DECLARE @Hashes TABLE (row_hash NVARCHAR(32));
+
+DECLARE @ColumnsToConcat NVARCHAR(MAX);
+SELECT @ColumnsToConcat = STUFF((
+    SELECT ', ' + COLUMN_NAME
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_SCHEMA = 'dbo' -- Replace 'dbo' with your schema name if it's different
+      AND TABLE_NAME = 'your_table_name'
+    ORDER BY ORDINAL_POSITION
+    FOR XML PATH('')), 1, 2, '');
+
+DECLARE @SQL NVARCHAR(MAX);
+SET @SQL = 'INSERT INTO @Hashes (row_hash)
+            SELECT HASHBYTES(''MD5'', CONCAT_WS('','', ' + @ColumnsToConcat + '))
+            FROM your_table;';
+
+EXEC sp_executesql @SQL;
+
+SELECT * FROM @Hashes;
