@@ -39,3 +39,34 @@ SET @SQL = 'INSERT INTO @Hashes (row_hash)
 EXEC sp_executesql @SQL;
 
 SELECT * FROM @Hashes;
+
+
+
+
+
+
+DECLARE @PrimaryKeyColumns NVARCHAR(MAX);
+
+SELECT @PrimaryKeyColumns = STUFF((
+    SELECT ', ' + COLUMN_NAME + ' ASC' -- Specify ASC explicitly
+    FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+    WHERE OBJECTPROPERTY(OBJECT_ID(CONSTRAINT_SCHEMA + '.' + CONSTRAINT_NAME), 'IsPrimaryKey') = 1
+      AND TABLE_SCHEMA = 'dbo' -- Replace 'dbo' with your schema name if it's different
+      AND TABLE_NAME = 'your_table_name'
+    ORDER BY ORDINAL_POSITION
+    FOR XML PATH('')), 1, 2, '');
+
+DECLARE @Hashes TABLE (row_hash NVARCHAR(32)); -- Declare the table variable
+
+DECLARE @SQL NVARCHAR(MAX);
+SET @SQL = 'INSERT INTO @Hashes (row_hash)
+            SELECT HASHBYTES(''MD5'', (
+                SELECT CONCAT_WS('','', ' + @PrimaryKeyColumns + ')
+                FROM your_table
+                FOR XML PATH('''')
+            ));';
+
+EXEC sp_executesql @SQL;
+
+SELECT * FROM @Hashes;
+
