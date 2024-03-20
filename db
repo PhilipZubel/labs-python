@@ -4,6 +4,11 @@ FROM YourTableName;
 
 
 
+SELECT SHA1(GROUP_CONCAT(CONVERT(HASH(Column1), CHAR(64)) ORDER BY Column1 SEPARATOR ''))
+FROM YourTableName;
+
+
+
 
 DECLARE @PrimaryKeyColumns NVARCHAR(MAX);
 
