@@ -1,3 +1,10 @@
+SELECT HASHBYTES('SHA1', STRING_AGG(CONVERT(NVARCHAR(MAX), HASHBYTES('SHA1', Column1)), '') WITHIN GROUP (ORDER BY Column1))
+FROM YourTableName;
+
+
+
+
+
 DECLARE @PrimaryKeyColumns NVARCHAR(MAX);
 
 SELECT @PrimaryKeyColumns = STUFF((
