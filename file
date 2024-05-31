@@ -1,0 +1,51 @@
+import unittest
+from unittest.mock import MagicMock, patch
+from your_module import YourClass  # Import your class
+
+class TestYourClass(unittest.TestCase):
+    
+    @patch('your_module.ObjectArchival')
+    @patch('your_module.FeedArchival')
+    def test_def_archive_db_objects(self, MockFeedArchival, MockObjectArchival):
+        # Create instance of your class
+        instance = YourClass()
+        
+        # Setup the parameters for the method
+        source_db_object_config = [
+            {
+                'ObjectName': 'TestObject',
+                'DependencyColumns': ['dep1', 'dep2']
+            }
+        ]
+        dest_feed_config = {'some_key': 'some_value'}
+        archival_metadata = {'meta_key': 'meta_value'}
+        
+        # Mock instances
+        mock_dest_feed_archival = MockFeedArchival.return_value
+        mock_source_db_object_archival = MockObjectArchival.return_value
+        
+        # Mock methods on the ObjectArchival instance
+        mock_source_db_object_archival.get_db_object_query.return_value = 'SELECT * FROM test'
+        mock_source_db_object_archival.retrieve_db_object.return_value = 'mocked_df'
+        mock_source_db_object_archival.parse_db_object_df.return_value = 'parsed_df'
+        mock_source_db_object_archival.get_parquet_file_prefix.return_value = 'test_prefix'
+        mock_source_db_object_archival.get_server_file_path_mapping.return_value = {'parquet_file': 'server_parquet_path', 'ctrl_file': 'server_ctrl_path'}
+        
+        # Mock FeedArchival static methods
+        mock_dest_feed_archival.upload.return_value = None
+        mock_dest_feed_archival.file_cleanup.return_value = None
+        
+        # Execute the method
+        instance.def_archive_db_objects(source_db_object_config, dest_feed_config, archival_metadata)
+        
+        # Assertions
+        mock_source_db_object_archival.get_db_object_query.assert_called_once_with(archival_metadata, instance.dependency_db_objects)
+        mock_source_db_object_archival.retrieve_db_object.assert_called_once_with('SELECT * FROM test', instance.db_module)
+        mock_source_db_object_archival.parse_db_object_df.assert_called_once_with('mocked_df', instance.feed_config['DestinationObjStoreKeys']['FeedName'])
+        mock_source_db_object_archival.save_db_object_parquet_local.assert_called_once_with('parsed_df', 'test_prefix.parquet')
+        mock_source_db_object_archival.create_ctrl_file.assert_called_once_with('test_prefix.ctrl', 'test_prefix.parquet', archival_metadata, 'mocked_df'.shape[0])
+        mock_dest_feed_archival.upload.assert_called_once_with({'parquet_file': 'server_parquet_path', 'ctrl_file': 'server_ctrl_path'})
+        mock_dest_feed_archival.file_cleanup.assert_called()
+
+if __name__ == '__main__':
+    unittest.main()
