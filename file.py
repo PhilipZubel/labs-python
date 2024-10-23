@@ -1,1 +1,4 @@
 Deception Technology for Phishing Response: Set up a deception-based defense system where phishing emails are rerouted to a sandbox environment, which simulates an actual user’s behavior. Here, the sandbox interacts with the phishing link or attachment to identify its intent. This would allow the cybersecurity team to see how the phishing attack would behave without risking user data, helping to analyze tactics and adjust defense strategies.
+
+
+AI-Based Chatbots for Real-Time Phishing Triage: Integrate an AI chatbot that can intervene when users receive emails with potentially suspicious content, offering immediate guidance. For example, if an email contains a link, the chatbot could advise the user on how to verify the authenticity before clicking. It could also automatically analyze and provide feedback based on the content, reducing the burden on IT helpdesks.
